@@ -4,4 +4,4 @@
  * 
  */
 
-ooLemonStandBox_ModuleManager::listModules();
+ooLemonStandBox_ModuleManager::listModules(false);
