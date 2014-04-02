@@ -66,7 +66,7 @@ class ooLemonStandBox_ModuleManager extends Core_ModuleManager
 					{
 						self::$_modules[$moduleId] = new $className($return_disabled_only);
 						
-						if (!Backend::$events->events_disabled && !$Phpr_DisableEvents && !self::$_eventsSubscribed)
+						if (!Backend::$events->events_disabled && !$Phpr_DisableEvents)
 							self::$_modules[$moduleId]->subscribeEvents();
 					}
 				}
