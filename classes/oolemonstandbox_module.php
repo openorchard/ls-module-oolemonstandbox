@@ -48,12 +48,12 @@
 						$file = '/'.$file;
 
 					if ($current_theme)
-						$file = $theme->get_resources_path().$file;
+						$file = '/..' . $theme->get_resources_path().$file;
 					else 
 						$file = '/'.Cms_SettingsManager::get()->resources_dir_path.$file;
 				}
 					
-				$files_array[] = 'file%5B%5D=%2F..'.urlencode(trim($file));
+				$files_array[] = 'file%5B%5D='. urlencode(trim($file));
 			}
 				
 			$options_str = array();
