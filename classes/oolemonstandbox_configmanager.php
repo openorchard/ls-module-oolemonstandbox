@@ -12,17 +12,18 @@ class ooLemonStandBox_ConfigManager
 		
 		$configPath = realpath( PATH_APP ."/"."config/config.php" );
 		if ( $configPath && is_readable($configPath) && is_writeable($configPath))
-			$configFile = fopen($configPath, 'a+');
+			$configFile = file_get_contents($configPath);
 
 		if( $configFile )
 		{
+			$configFile = preg_replace('/\?>\s*$/', '', $configFile);
 
-			fwrite($configFile, "\n// Added by LemonStandBox DO NOT REMOVE");
-			fwrite($configFile, "\n\t\$CONFIG['LOADED_LEMONSTANDBOX'] = true;");
-			fwrite($configFile, "\n\tinclude('" . PATH_PROTOBOX . "/config/config.php');");
-			fwrite($configFile, "\n\tinclude('" . PATH_PROTOBOX . "/config/lemonstandbox.php');");
+			$configFile .= "\n// Added by LemonStandBox DO NOT REMOVE";
+			$configFile .= "\n\t\$CONFIG['LOADED_LEMONSTANDBOX'] = true;";
+			$configFile .=  "\n\tinclude('" . PATH_PROTOBOX . "/config/config.php');";
+			$configFile .=  "\n\tinclude('" . PATH_PROTOBOX . "/config/lemonstandbox.php');";
 
-			fclose($configFile);
+			file_put_contents($configPath,$configFile);
 		}
 	}
 }
