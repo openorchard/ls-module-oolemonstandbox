@@ -18,8 +18,19 @@
 		public function subscribe_events()
 		{
 			Backend::$events->addEvent('cms:onBeforeResourceCombine', $this, 'combine_resources');
+			Backend::$events->addEvent('onLogin', $this, 'on_admin_login');
+			
+			// core:onBeforeSoftwareUpdate
+			// core:onAfterSoftwareUpdate
 		}		
 
+		/**
+		 * Admin Login event handler
+		 */
+		public function on_admin_login()
+		{
+			ooLemonStandBox_UpdateManager::update();
+		}
 		/**
 		 * Excerpt from original combine resources. 
 		 * @param  array $args  argument array
