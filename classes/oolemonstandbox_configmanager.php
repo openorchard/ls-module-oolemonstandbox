@@ -26,7 +26,5 @@ class ooLemonStandBox_ConfigManager
 			file_put_contents($configPath,$configFile);
 		}
 
-		// Update modules the first time.
-		ooLemonStandBox_UpdateManager::update();
 	}
 }
