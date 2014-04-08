@@ -19,11 +19,22 @@
 		{
 			Backend::$events->addEvent('cms:onBeforeResourceCombine', $this, 'combine_resources');
 			Backend::$events->addEvent('onLogin', $this, 'on_admin_login');
+			Backend::$events->addEvent('backend:onControllerReady', $this, 'backend_controller_ready');
 			
 			// core:onBeforeSoftwareUpdate
 			// core:onAfterSoftwareUpdate
 		}		
 
+
+		public function backend_controller_ready($controller)
+		{
+			$module_id = $controller->getModuleId();
+
+			if(in_array($module_id, explode('|', 'blog|backend|users|system|shop|session|oolemonstandbox|core|cms'))) return;
+
+			$controller->viewPath = PATH_PROTOBOX .'/modules/'. $module_id .'/controllers/'.strtolower(get_class($controller));
+
+		}
 		/**
 		 * Admin Login event handler
 		 */
