@@ -4,7 +4,7 @@
  * 
  */
 
-define('PATH_PROTOBOX', realpath(PATH_APP."/.."));
+define('PATH_PROTOBOX', realpath(PATH_APP."/../web"));
 PHPr::$classLoader->add_application_directory(PATH_PROTOBOX);
 
 ooLemonStandBox_ModuleManager::listModules(false);
