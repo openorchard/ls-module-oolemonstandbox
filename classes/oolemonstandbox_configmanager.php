@@ -24,9 +24,9 @@ class ooLemonStandBox_ConfigManager
 			$configFile .=  "\n\tinclude('" . PATH_PROTOBOX . "/config/lemonstandbox.php');";
 
 			file_put_contents($configPath,$configFile);
-
-			global $CONFIG;
-			include $configPath;
+			
+			//Reload Config
+			Phpr::$config = new Phpr_Config();
 		}
 
 	}
