@@ -27,4 +27,31 @@ class ooLemonStandBox_ConfigManager
 		}
 
 	}
+
+	public static function updateCMS()
+	{
+
+		if(Phpr::$config->get('CMS_FILEBASED_TEMPLATES', false) && !Cms_SettingsManager::get()->enable_filebased_templates)
+		{
+
+			Cms_SettingsManager::get()
+							  ->save(array(	'enable_filebased_templates'=>	Phpr::$config->get('CMS_FILEBASED_TEMPLATES')
+										,	'templates_dir_path'		=>	Phpr::$config->get('TEMPLATE_PATH')
+										,	'content_file_extension'	=>	Phpr::$config->get('CMS_CONTENT_FILE_EXT', 'php')
+										,	'resources_dir_path'		=>	Phpr::$config->get('CMS_RESOURCES_DIR', 'resources' )
+										)
+									);
+			
+			$res_dir 	= Cms_SettingsManager::get()->resources_dir_path;
+			$theme_dir	= Cms_SettingsManager::get()->templates_dir_path;
+			$themes 	= Cms_Theme::list_themes();
+			foreach ($themes as $theme)
+			{
+				$og_res  = PATH_APP . '/themes/'.$theme->code.'/' . $res_dir;
+				$new_res = $theme_dir . '/'.$theme->code.'/' . $res_dir;
+
+				Phpr_Files::copyDir($og_res,$new_res);
+			}
+		}
+	}
 }
