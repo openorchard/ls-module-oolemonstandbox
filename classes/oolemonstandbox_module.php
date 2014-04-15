@@ -34,15 +34,13 @@
 			$sapi = php_sapi_name();
 			
 			if ($sapi == 'cli')
-				return true;
+				return;
 			
 			if (array_key_exists('SHELL', $_SERVER) && strlen($_SERVER['SHELL']))
-				return true;
+				return;
 				
 			if (!array_key_exists('DOCUMENT_ROOT', $_SERVER) || !strlen($_SERVER['DOCUMENT_ROOT']))
-				return true;
-
-			return false;
+				return;
 
 			$config = Core_ModuleSettings::create('oolemonstandbox','lemonstandbox-settings');
 
