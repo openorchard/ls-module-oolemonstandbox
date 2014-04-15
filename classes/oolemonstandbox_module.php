@@ -4,9 +4,7 @@
 	class ooLemonStandBox_Module extends Core_ModuleBase
 	{
 
-		public static $configured = true;
-
-		public static $settings = null;
+		static public $configured = false;
 
 		/**
 		 * Creates the module information object
@@ -22,7 +20,7 @@
 		
 		public function subscribe_events()
 		{
-			Backend::$events->addEvent('cms:onGetPageContent', $this, 'frontend_page_request');
+			Backend::$events->addEvent('cms:onGetTemplateContent', $this, 'frontend_page_request');
 			Backend::$events->addEvent('cms:onBeforeResourceCombine', $this, 'combine_resources');
 			Backend::$events->addEvent('onLogin', $this, 'on_admin_login');
 			Backend::$events->addEvent('backend:onControllerReady', $this, 'backend_controller_ready');
@@ -32,7 +30,7 @@
 
 		public static function configure()
 		{
-			$config = Core_ModuleSettings::create('ooLemonStandBox','lemonstandbox-settings');
+			$config = Core_ModuleSettings::create('oolemonstandbox','lemonstandbox-settings');
 
 			if(!$config->is_new_record())
 			{
@@ -43,6 +41,34 @@
 		public function frontend_page_request($data)
 		{
 			if(self::$configured) return $data;
+
+			$config = Core_ModuleSettings::create('oolemonstandbox','lemonstandbox-settings');
+
+			$config->module_path = post_array_item('Core_ModuleSettings', 'module_path',$config->module_path);
+			$config->theme_path = post_array_item('Core_ModuleSettings', 'theme_path',$config->theme_path);
+			$config->template_path = post_array_item('Core_ModuleSettings','template_path',$config->template_path);
+
+			if(Phpr::$request->isPostBack())
+			{
+				$config->save();
+				//Update Config
+				ooLemonStandBox_ConfigManager::updateConfig();
+				//Update Modules
+				ooLemonStandBox_UpdateManager::update();
+				//Update CMS
+				ooLemonStandBox_ConfigManager::updateCMS();
+				//redirect to home
+				Phpr::$response->redirect('/');
+			}else{
+
+
+				$controller = new Core_Settings();
+				$controller->edit('oolemonstandbox','lemonstandbox-settings');
+				
+				$data['content'] = $controller->loadView('edit');
+			}
+
+			return $data;
 
 		}	
 
@@ -105,15 +131,27 @@
 
 		}
 
+		/**
+		 * Backend Controller ready handler
+		 *
+		 * Replaces the viewPath of the module controllers
+		 * with correct location for development paths.
+		 * 
+		 * @param  Backend_Controller 	$controller an instance of a backend controller
+		 * @return void             
+		 */
 		public function backend_controller_ready($controller)
 		{
 			$module_id = $controller->getModuleId();
 
 			if(in_array($module_id, explode('|', 'blog|backend|users|system|shop|session|oolemonstandbox|core|cms'))) return;
 
-			$controller->viewPath = PATH_PROTOBOX .'/modules/'. $module_id .'/controllers/'.strtolower(get_class($controller));
+			$config = Core_ModuleSettings::create('oolemonstandbox','lemonstandbox-settings');
+
+			$controller->viewPath = $config->module_path . $module_id .'/controllers/'.strtolower(get_class($controller));
 
 		}
+
 		/**
 		 * Admin Login event handler
 		 */
@@ -181,6 +219,8 @@
 
 		}
 		
+
+
 		/*
 		 * Awaiting Deprecation
 		 */
