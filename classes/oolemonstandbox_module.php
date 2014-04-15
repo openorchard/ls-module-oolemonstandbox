@@ -1,7 +1,12 @@
 <?php
+	define('PATH_MOD_OOLEMONSTANDBOX', realpath(dirname(__FILE__) . '/../'));
 
 	class ooLemonStandBox_Module extends Core_ModuleBase
 	{
+
+		public static $configured = true;
+
+		public static $settings = null;
 
 		/**
 		 * Creates the module information object
@@ -17,14 +22,88 @@
 		
 		public function subscribe_events()
 		{
+			Backend::$events->addEvent('cms:onGetPageContent', $this, 'frontend_page_request');
 			Backend::$events->addEvent('cms:onBeforeResourceCombine', $this, 'combine_resources');
 			Backend::$events->addEvent('onLogin', $this, 'on_admin_login');
 			Backend::$events->addEvent('backend:onControllerReady', $this, 'backend_controller_ready');
-			
 			// core:onBeforeSoftwareUpdate
 			// core:onAfterSoftwareUpdate
-		}		
+		}	
 
+		public static function configure()
+		{
+			$config = Core_ModuleSettings::create('ooLemonStandBox','lemonstandbox-settings');
+
+			if(!$config->is_new_record())
+			{
+				self::$configured = true;
+			}
+		}
+
+		public function frontend_page_request($data)
+		{
+			if(self::$configured) return $data;
+
+		}	
+
+		public function listSettingsForms()
+		{
+			return array(
+					'lemonstandbox-settings'=>array(
+					'icon'=> PATH_MOD_OOLEMONSTANDBOX . '/resources/images/settings.png',
+					'title'=>'LemonStandBox Settings',
+					'description'=>'Configure locations and settings regarding lemonstandbox',
+					'sort_id'=>100,
+					'section'=>'System'
+					)
+				);
+		}
+
+		public function buildSettingsForm($model, $form_code)
+		{
+			$model->add_field('module_path', 'Development Module Path', 'full', db_varchar);
+			$model->add_field('theme_path', 'Development Theme Path', 'full', db_varchar);
+			$model->add_field('template_path', 'Development Template Path', 'full', db_varchar);
+		}
+
+		public function initSettingsData($model, $form_code)
+		{
+
+			$model->module_path = PATH_PROTOBOX . '/modules/';
+			$model->theme_path = PATH_PROTOBOX . '/themes/';
+			$model->template_path = PATH_PROTOBOX . '/themes/';
+			
+			// /*
+			//  * Grouped products are disabled in favor of Option Matrix
+			//  * See http://v1.lemonstand.com/docs/understanding_option_matrix/
+			//  */
+
+			// $CONFIG['CACHE_SHIPPING_METHODS']		= false;
+			// $CONFIG['ENABLE_BACKEND_TOUR']			= false;
+
+			// // TEMPLATE_PATH
+			// $CONFIG['TEMPLATE_PATH']				= '/srv/www/web/themes';
+			// $CONFIG['ALLOWED_RESOURCE_PATHS']		= array( PATH_APP, '/srv/www/web/themes' );
+			// $CONFIG['RESOURCE_SYMLINKS']			= array( '//themes'=>'/srv/www/web/themes' );
+
+			// $CONFIG['DISABLE_USAGE_STATISTICS']		= false;
+			// $CONFIG['AUTO_CHECK_UPDATES']			= false;
+
+			// $CONFIG['CMS_FILEBASED_TEMPLATES']		= true;
+			// $CONFIG['CMS_CONTENT_FILE_EXT']			= 'php';
+			// $CONFIG['CMS_RESOURCES_DIR']			= 'resources';
+
+		}
+
+		public function validateSettingsData($model, $form_code)
+		{
+
+		}
+
+		public function getSettingsFieldOptions($model, $form_code, $field_code)
+		{
+
+		}
 
 		public function backend_controller_ready($controller)
 		{
