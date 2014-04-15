@@ -3,4 +3,4 @@
  * Update modules in the lemonstandbox develpment area.
  * 
  */
-ooLemonStandBox_UpdateManager::update();
+//ooLemonStandBox_UpdateManager::update();

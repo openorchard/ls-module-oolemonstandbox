@@ -4,4 +4,4 @@
  * Also loads configs from LemonStandBox
  * 
  */
-ooLemonStandBox_ConfigManager::updateConfig();
+//ooLemonStandBox_ConfigManager::updateConfig();
