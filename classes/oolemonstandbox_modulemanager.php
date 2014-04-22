@@ -17,6 +17,8 @@ class ooLemonStandBox_ModuleManager extends Core_ModuleManager
 	 */
 	public static function listModules($allow_caching = true, $return_disabled_only = false)
 	{
+		if( !ooLemonStandBox_Module::$configured ) return;
+		
 		global $Phpr_DisableEvents;
 		
 		$Phpr_DisableEvents = isset($Phpr_DisableEvents) && $Phpr_DisableEvents;
