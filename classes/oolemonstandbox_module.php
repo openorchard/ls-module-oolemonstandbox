@@ -78,8 +78,10 @@
 
 				$controller = new Core_Settings();
 				$controller->edit('oolemonstandbox','lemonstandbox-settings');
-				
+				$controller->layout = 'login';
 				$data['content'] = $controller->loadView('edit');
+
+
 			}
 
 			return $data;
