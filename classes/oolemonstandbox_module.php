@@ -63,6 +63,8 @@
 			if(Phpr::$request->isPostBack())
 			{
 				$config->save();
+				//Set configured flag
+				self::$configured = true;
 				//Update Config
 				ooLemonStandBox_ConfigManager::updateConfig();
 				//Update Modules
