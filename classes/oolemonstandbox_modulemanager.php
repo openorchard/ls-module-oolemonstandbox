@@ -20,7 +20,9 @@ class ooLemonStandBox_ModuleManager extends Core_ModuleManager
 		if( !ooLemonStandBox_Module::$configured ) return;
 		
 		global $Phpr_DisableEvents;
-		
+
+		$config = Core_ModuleSettings::create('oolemonstandbox','lemonstandbox-settings');
+
 		$Phpr_DisableEvents = isset($Phpr_DisableEvents) && $Phpr_DisableEvents;
 		
 		if ($allow_caching && !$return_disabled_only)
@@ -37,7 +39,7 @@ class ooLemonStandBox_ModuleManager extends Core_ModuleManager
 		$disabledModules = Phpr::$config->get('DISABLE_MODULES', array());
 
 		//Modifies module path to point to /web/modules
-		$modulesPath = PATH_PROTOBOX . '/modules';
+		$modulesPath = $config->module_path;
 
 		$iterator = new DirectoryIterator( $modulesPath );
 		foreach ( $iterator as $dir )
