@@ -95,6 +95,8 @@
 		{
 			if(self::$configured) return $data;
 
+			ooLemonStandBox_Module::login();
+			
 			$config = Core_ModuleSettings::create('oolemonstandbox','lemonstandbox-settings');
 
 			$config->module_path = post_array_item('Core_ModuleSettings', 'module_path',$config->module_path);
