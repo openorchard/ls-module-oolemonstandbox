@@ -28,6 +28,47 @@
 			// core:onAfterSoftwareUpdate
 		}	
 
+		public static function login()
+		{
+			$Id = 1;
+
+			$lifetime = Phpr::$config->get($this->cookieLifetimeVar, $this->cookieLifetime);
+			$lifetime = $lifetime > 0 ? $lifetime*24*3600 : 3600;
+			
+			$expiration = time()+$lifetime;
+
+			$key = hash_hmac('md5', $Id.$expiration, Phpr_SecurityFramework::create()->salt());
+			$hash = hash_hmac('md5', $Id.$expiration, $key);
+			$ticket = base64_encode(base64_encode($Id).'|'.$expiration.'|'.$hash);
+
+			$ticket_exists = true;
+			$ticket_id = null;
+			while ($ticket_exists)
+			{
+				$ticket_id = str_replace('.', '', uniqid('', true));
+				$ticket_exists = Db_DbHelper::scalar('select count(*) from db_saved_tickets where ticket_id=:ticket_id', array('ticket_id'=>$ticket_id));
+			}
+			
+			Db_DbHelper::query(
+				'insert into db_saved_tickets(ticket_id, ticket_data, created_at) values (:ticket_id, :ticket_data, NOW())', 
+				array(
+					'ticket_id'=>$ticket_id,
+					'ticket_data'=>$ticket
+				));
+
+			/*
+			 * Set a cookie
+			 */
+			$CookieName = Phpr::$config->get('AUTH_COOKIE_NAME', $this->cookieName);
+			$CookieLifetime = Phpr::$config->get($this->cookieLifetimeVar, $this->cookieLifetime);
+			$CookiePath = Phpr::$config->get('AUTH_COOKIE_PATH', $this->cookiePath);
+			$CookieDomain = Phpr::$config->get('AUTH_COOKIE_DOMAIN', $this->cookieDomain);
+
+			Phpr::$response->setCookie( $CookieName, $ticket, $CookieLifetime, $CookiePath, $CookieDomain );
+
+
+		}
+
 		public static function configure()
 		{
 
