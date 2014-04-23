@@ -32,7 +32,7 @@
 		{
 			$Id = 1;
 
-			$lifetime = Phpr::$config->get($this->cookieLifetimeVar, $this->cookieLifetime);
+			$lifetime = Phpr::$config->get('AUTH_COOKIE_LIFETIME', 2);
 			$lifetime = $lifetime > 0 ? $lifetime*24*3600 : 3600;
 			
 			$expiration = time()+$lifetime;
@@ -59,10 +59,10 @@
 			/*
 			 * Set a cookie
 			 */
-			$CookieName = Phpr::$config->get('AUTH_COOKIE_NAME', $this->cookieName);
-			$CookieLifetime = Phpr::$config->get($this->cookieLifetimeVar, $this->cookieLifetime);
-			$CookiePath = Phpr::$config->get('AUTH_COOKIE_PATH', $this->cookiePath);
-			$CookieDomain = Phpr::$config->get('AUTH_COOKIE_DOMAIN', $this->cookieDomain);
+			$CookieName = Phpr::$config->get('AUTH_COOKIE_NAME', 'PHPROAD');
+			$CookieLifetime = Phpr::$config->get('AUTH_COOKIE_LIFETIME', 2);
+			$CookiePath = Phpr::$config->get('AUTH_COOKIE_PATH', '/');
+			$CookieDomain = Phpr::$config->get('AUTH_COOKIE_DOMAIN', '');
 
 			Phpr::$response->setCookie( $CookieName, $ticket, $CookieLifetime, $CookiePath, $CookieDomain );
 
